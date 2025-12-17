@@ -1,0 +1,2 @@
+# classfund-manager
+A simple web-based class fund management system built for internal use by a college class. This project allows a Class Representative (CR) to collect class fund contributions digitally using Razorpay, track individual student contributions, and maintain transparent expense records — all in one place.  The project is intentionally kept lightweight and beginner-friendly, focusing on real-world learning rather than over-engineering.
