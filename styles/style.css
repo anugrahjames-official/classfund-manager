@@ -54,6 +54,10 @@ button {
 
 }
 
+.hidden {
+    display: none;
+}
+
 .login-card {
     width: 100%;
     max-width: 400px;
@@ -88,6 +92,7 @@ button {
     font-size: 1.25rem;
     color: rgb(31, 7, 240);
 }
+
 .logout-btn {
     padding: 0.5rem 1rem;
     border: none;
@@ -125,7 +130,7 @@ button {
     margin-bottom: 3px;
 }
 
-.dashboard {
+.dashboard ,.container{
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
@@ -157,4 +162,42 @@ nav {
     transform: translateY(-5px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-color: #e2e8f0;
+}
+
+/* class fund */
+.table-container {
+    background:white;
+    border-radius:10px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th {
+    background: #f1f5f9;
+    padding: 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: rgb(31, 7, 240);
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
 }
