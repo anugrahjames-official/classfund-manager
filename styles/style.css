@@ -1,34 +1,87 @@
-input{
-   
-   
-    width: 50%;
-  
+* {
+    font-family: sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-h1,h2,h3{
+
+input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+
+    margin-bottom: 1.25rem;
+
+}
+
+h1,
+h2,
+h3 {
     margin: 0;
 }
 
-button{
-   
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+button {
+
     padding: 10px 40px;
 }
-.container{
+
+.container {
     width: 400px;
     margin: 0 auto;
 }
+
 /* login */
-.login-block{
-   
-    background-color: antiquewhite;
-   
+.login-page {
+
+    background-color: #f8fafc;
+
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    min-height: 100vh;
+
 }
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 8px;
+}
+
+.login-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: white;
+    background-color: rgb(31, 7, 240);
+
+}
+
+
 /* dashboard */
-.box{
+.box {
     border: 1px black solid;
     width: 50%;
     margin-bottom: 5px;
@@ -36,15 +89,14 @@ button{
     flex-direction: column;
     align-items: center;
     padding: 15px 0px;
-    
+
 }
 
-.dashboard{
-   
+.dashboard {
+
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-bottom: 30px;
     align-items: center;
 }
-
