@@ -1,11 +1,30 @@
-const loginBtn=document.getElementById("login-btn")
-const userEl=document.getElementById("user")
-const passEl=document.getElementById("pass")
+import { signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-loginBtn.addEventListener("click",()=>{
-    let user=userEl.value
-    let pass=passEl.value
-    console.log(user,pass)
-    userEl.value=""
-    passEl.value=""    
-})
+import { auth } from "./firebase.js";
+
+const loginBtn = document.getElementById("login-btn");
+const userEl = document.getElementById("user");
+const passEl = document.getElementById("pass");
+
+loginBtn.addEventListener("click", () => {
+  const user = userEl.value.trim();
+  const pass = passEl.value.trim();
+
+  if (!user || !pass) {
+    alert("Enter roll no and password");
+    return;
+  }
+
+  const email = `${user}@cseb.com`;
+
+  signInWithEmailAndPassword(auth, email, pass)
+    .then(() => {
+      alert("Login success");
+      window.location.href = "dashboard.html";
+    })
+    .catch((err) => {
+      alert("Login failed");
+      console.error(err.code, err.message);
+    });
+});

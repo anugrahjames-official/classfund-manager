@@ -1,0 +1,14 @@
+firebase.js
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Firebase admin credentials
+serviceAccountKey.json
+
+# Environment variables
+.env
+
+# Editor / OS
+.vscode/
+.DS_Store
