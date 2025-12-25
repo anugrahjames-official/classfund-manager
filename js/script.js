@@ -28,3 +28,4 @@ loginBtn.addEventListener("click", () => {
       console.error(err.code, err.message);
     });
 });
+

@@ -14,16 +14,16 @@
         <div id="header-name">CSE - B </div>
         <button id="logout-btn" class="logout-btn">Logout</button>
     </nav>
-    <section class="dashboard hidden">
+    <section id="home-page" class="dashboard">
         <div class="dashboard-header">
             <h1>Class Dashboard</h1>
             <p class="welcome">Welcome,<span id="user-name">Student</span></p>
         </div>
         <div class="cards-grid">
-            <div class="card">
+            <div class="card" onclick="navigateToClassFund()">
                 <h3>Class Fund</h3>
                 <p>Balance <span id="total-balance">500</span> </p>
-                <small >View All expenses</small>
+                <small>View All expenses</small>
 
             </div>
             <div class="card">
@@ -34,13 +34,17 @@
 
         </div>
     </section>
-    <section id="class-fund-page" class="container">
-        <div class="back-btn" onclick="navigateTo('dashboard')">← Back to Dashboard</div>
+    <section id="class-fund-page" class="container hidden">
+        <div class="back-btn" onclick="navigateToHome()">← Back to Dashboard</div>
         <h1>Class Fund Transactions</h1>
         <div class="table-container">
             <table>
                 <thead>
-                    <tr><th>Date</th><th>Description</th><th>Amount</th></tr>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                    </tr>
                 </thead>
                 <tbody id="class-fund-table">
 
@@ -48,6 +52,17 @@
             </table>
         </div>
     </section>
+    <script>
+        function navigateToHome() {
+            console.log("clicked");
+            document.getElementById("class-fund-page").classList.toggle("hidden");
+            document.getElementById("home-page").classList.toggle("hidden");
+        }
+        function navigateToClassFund() {
+            document.getElementById("home-page").classList.toggle("hidden");
+            document.getElementById("class-fund-page").classList.toggle("hidden");
+        }
+    </script>
 
 </body>
 
