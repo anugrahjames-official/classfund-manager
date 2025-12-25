@@ -1,26 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSE - B </title>
     <link href="styles/style.css" rel="stylesheet">
 </head>
+
 <body>
 
-    <header class="dashboard container">
-     <h2>CSE - B | DashBoard</h2>
-    </header>
-    <main  class="dashboard container">
-        <div class="box">
-            <h3>Balance</h3>
-            <span>500</span>
+    <nav class="nav container">
+        <div id="header-name">CSE - B </div>
+        <button id="logout-btn" class="logout-btn">Logout</button>
+    </nav>
+    <section class="dashboard">
+        <div class="dashboard-header">
+            <h1>Class Dashboard</h1>
+            <p class="welcome">Welcome,<span id="user-name">Student</span></p>
         </div>
-        <div class="box">
-            <h3>My payments</h3>
-            <span>30</span>
+        <div class="cards-grid">
+            <div class="card">
+                <h3>Class Fund</h3>
+                <p>Balancce <span id="total-balance">500</span> </p>
+                <small >View All expenses</small>
+
+            </div>
+            <div class="card">
+                <h3>My payments</h3>
+                <p>Total Paid: <span id="user-total">100</span></p>
+                <small>View All payments</small>
+            </div>
+
         </div>
+    </section>
+    <main class="dashboard">
+
 
     </main>
 </body>
+
 </html>
