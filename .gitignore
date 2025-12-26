@@ -4,7 +4,7 @@ node_modules/
 npm-debug.log*
 
 # Firebase admin credentials
-serviceAccountKey.json
+serviceAccount.json
 
 # Environment variables
 .env

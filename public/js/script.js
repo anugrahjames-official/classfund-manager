@@ -21,7 +21,7 @@ loginBtn.addEventListener("click", () => {
   signInWithEmailAndPassword(auth, email, pass)
     .then(() => {
       alert("Login success");
-      window.location.href = "dashboard.html";
+      setTimeout(() => { window.location.href = "./dashboard.html"; }, 5000);
     })
     .catch((err) => {
       alert("Login failed");
