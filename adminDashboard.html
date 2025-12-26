@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - CSE-B Class Fund</title>
+    <link href="styles/admin.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <button onclick="location.reload()" style="background: none; border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Refresh Data</button>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Students</h3>
+                <p id="total-students">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Expenses</h3>
+                <p id="total-expenses" class="expense-text">₹0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Net Balance</h3>
+                <p id="total-balance">₹0</p>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-header">
+                <div class="input-group">
+                    <label for="min-amount">Set Min Amount:</label>
+                    <input type="number" id="min-amount" value="500" oninput="updateTable()">
+                </div>
+                <div id="defaulter-count" class="count-badge">0 Students below target</div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Showing list of students who have paid less than the required amount.</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Student Name</th>
+                        <th>Amount Paid</th>
+                        <th>Gap</th>
+                    </tr>
+                </thead>
+                <tbody id="student-table"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Floating Add Expense Button -->
+    <button class="fab-expense" onclick="openModal()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        ADD EXPENSE
+    </button>
+
+    <!-- Modal for Expense -->
+    <div id="expense-modal" class="modal-overlay">
+        <div class="modal">
+            <h2>Record Expense</h2>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label>Description</label>
+                    <input type="text" id="exp-desc" style="width: 100%;" placeholder="e.g. A4 Paper">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                    <label>Amount (₹)</label>
+                    <input type="number" id="exp-amount" style="width: 100%;" placeholder="0">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-confirm" onclick="saveExpense()">Save Expense</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+       
+        const students = [
+            { id: "21BCE001", name: "Aarav Sharma", paid: 1000 },
+            { id: "21BCE002", name: "Ananya Iyer", paid: 0 },
+            { id: "21BCE003", name: "Ishaan Patel", paid: 100 },
+            { id: "21BCE004", name: "Kavya Reddy", paid: 450 },
+            { id: "21BCE005", name: "Rohan Das", paid: 750 },
+            { id: "21BCE006", name: "Sanya Malhotra", paid: 0 },
+            { id: "21BCE007", name: "Vikram Singh", paid: 500 },
+            { id: "21BCE008", name: "Zoya Khan", paid: 50 },
+            { id: "21BCE009", name: "Aditya Verma", paid: 200 },
+            { id: "21BCE010", name: "Meera Nair", paid: 1000 }
+        ];
+
+        let expenses = [
+            { desc: "Initial Setup", amount: 150 }
+        ];
+
+        function openModal() {
+            document.getElementById('expense-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('expense-modal').style.display = 'none';
+        }
+
+        function saveExpense() {
+            const desc = document.getElementById('exp-desc').value;
+            const amount = parseFloat(document.getElementById('exp-amount').value);
+
+            if (desc && amount > 0) {
+                expenses.push({ desc, amount });
+                document.getElementById('exp-desc').value = '';
+                document.getElementById('exp-amount').value = '';
+                closeModal();
+                updateTable();
+            }
+        }
+
+        function updateTable() {
+            const minAmount = parseFloat(document.getElementById('min-amount').value) || 0;
+            const tbody = document.getElementById('student-table');
+            const defaulterBadge = document.getElementById('defaulter-count');
+            
+            tbody.innerHTML = '';
+            const defaulters = students.filter(s => s.paid < minAmount);
+            
+            defaulters.forEach(s => {
+                const gap = minAmount - s.paid;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${s.id}</td>
+                    <td style="font-weight: 500;">${s.name}</td>
+                    <td style="font-weight: 600;">₹${s.paid}</td>
+                    <td style="color: var(--danger)">-₹${gap}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            defaulterBadge.textContent = `${defaulters.length} Students below target`;
+            
+            // Calculate Stats
+            const totalCollected = students.reduce((sum, s) => sum + s.paid, 0);
+            const totalExp = expenses.reduce((sum, e) => sum + e.amount, 0);
+            
+            document.getElementById('total-students').textContent = students.length;
+            document.getElementById('total-expenses').textContent = `₹${totalExp.toLocaleString()}`;
+            document.getElementById('total-balance').textContent = `₹${(totalCollected - totalExp).toLocaleString()}`;
+        }
+
+        window.onload = updateTable;
+    </script>
+</body>
+</html>
