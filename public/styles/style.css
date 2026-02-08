@@ -6,8 +6,9 @@
 }
 
 body {
-    background-color: #f8fafc;
-    ;
+
+    background-image: url('bg.png');
+    background-size: cover;
 }
 
 input {
@@ -45,7 +46,7 @@ button {
 /* login */
 .login-page {
 
-    background-color: #f8fafc;
+
 
     display: flex;
     justify-content: center;
@@ -61,7 +62,7 @@ button {
 .login-card {
     width: 100%;
     max-width: 400px;
-    background-color: white;
+    /* background-color: white; */
     padding: 2.5rem;
     border-radius: 8px;
 }
@@ -69,6 +70,15 @@ button {
 .login-card h2 {
     text-align: center;
     margin-bottom: 20px;
+    font-family: 'VT323', monospace;
+    font-size: 50px;
+    color: #ffcc00;
+}
+
+#inner-card {
+    /* background-image: url('woodenbg.png'); */
+    background-size: cover;
+    padding: 20px;
 }
 
 .login-btn {
@@ -79,11 +89,26 @@ button {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
     color: white;
     background-color: rgb(31, 7, 240);
 
 }
+
+.title-shadow {
+    text-shadow:
+        3px 3px 0 #5d2e1d,
+        /* Bottom-right shadow */
+        -1px -1px 0 #5d2e1d,
+        /* Top-left outline */
+        1px -1px 0 #5d2e1d,
+        /* Top-right outline */
+        -1px 1px 0 #5d2e1d,
+        /* Bottom-left outline */
+        1px 1px 0 #5d2e1d;
+    /* Bottom-right outline */
+    letter-spacing: 2px;
+}
+
 
 
 /* dashboard */
@@ -110,8 +135,28 @@ button {
     text-align: center;
 }
 
+.dashboard-h1 {
+    font-family: 'VT323', monospace;
+    font-size: 50px;
+    color: #ffcc00;
+}
+
+.welcome-text, .welcome-text span {
+    color: white;
+    font-size: 2.25rem;
+    line-height: 2.25rem;
+
+
+    filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.4)) drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+
+    font-family: 'VT323', monospace;
+}
+
 .card {
-    background: white;
+    /* background: #e8dab8; */
+    background-image: url("light-wood.png");
+    background-size: cover;
+    
     padding: 2rem;
     border-radius: 10px;
     cursor: pointer;
@@ -147,7 +192,7 @@ nav {
     align-items: center;
     position: sticky;
     top: 0;
-    background-color: white;
+    /* background-color: white; */
     z-index: 100;
 
 }

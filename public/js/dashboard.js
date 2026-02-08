@@ -62,6 +62,7 @@ async function getStudentData(inputRollNo) {
         console.log("Found User:", data.name);
         console.log("Total Contributed:", data.totalPaid);
         document.getElementById("user-total").textContent=data.totalPaid
+        document.getElementById("user-name").textContent=data.name
         
       });
     } else {
