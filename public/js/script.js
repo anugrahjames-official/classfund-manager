@@ -1,12 +1,12 @@
-import { signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import { auth } from "./firebase.js";
 
 const loginBtn = document.getElementById("login-btn");
 const userEl = document.getElementById("user");
 const passEl = document.getElementById("pass");
-
+const user = null
+const pass = null
 loginBtn.addEventListener("click", () => {
   const user = userEl.value.trim();
   const pass = passEl.value.trim();
@@ -21,11 +21,12 @@ loginBtn.addEventListener("click", () => {
   signInWithEmailAndPassword(auth, email, pass)
     .then(() => {
       alert("Login success");
-      setTimeout(() => { window.location.href = "./dashboard.html"; }, 5000);
+      setTimeout(() => { window.location.href = "./dashboard.html"; }, 1000);
     })
     .catch((err) => {
       alert("Login failed");
       console.error(err.code, err.message);
     });
 });
+
 

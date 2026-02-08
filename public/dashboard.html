@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSE - B </title>
-    <link href="public/styles/style.css" rel="stylesheet">
+    <link href="styles/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -14,8 +14,8 @@
         <div id="header-name">CSE - B </div>
         <button id="logout-btn" class="logout-btn">Logout</button>
     </nav>
-   <button class="pay-btn" onclick="openPayModal()">Pay</button>
-   
+    <button class="pay-btn" onclick="openPayModal()">Pay</button>
+
 
     <section id="home-page" class="dashboard">
         <div class="dashboard-header">
@@ -23,22 +23,22 @@
             <p class="welcome">Welcome,<span id="user-name">Student</span></p>
         </div>
         <div class="cards-grid">
-            <div class="card" onclick="navigateToClassFund()">
+            <div class="card" id="classFund-card">
                 <h3>Class Fund</h3>
-                <p>Balance <span id="total-balance">500</span> </p>
+                <p>Balance <span id="total-balance">0</span> </p>
                 <small>View All expenses</small>
 
             </div>
             <div class="card">
                 <h3>My payments</h3>
-                <p>Total Paid: <span id="user-total">100</span></p>
+                <p>Total Paid: <span id="user-total">0</span></p>
                 <small>View All payments</small>
             </div>
 
         </div>
     </section>
     <section id="class-fund-page" class="container hidden">
-        <div class="back-btn" onclick="navigateToHome()">← Back to Dashboard</div>
+        <div class="back-btn" id='back-btn'>← Back to Dashboard</div>
         <h1>Class Fund Transactions</h1>
         <div class="table-container">
             <table>
@@ -55,25 +55,9 @@
             </table>
         </div>
     </section>
-    <script>
-        function navigateToHome() {
-            console.log("clicked");
-            document.getElementById("class-fund-page").classList.toggle("hidden");
-            document.getElementById("home-page").classList.toggle("hidden");
-        }
-        function navigateToClassFund() {
-            document.getElementById("home-page").classList.toggle("hidden");
-            document.getElementById("class-fund-page").classList.toggle("hidden");
-        }
-        function openPayModal() {
-            document.getElementById('pay-modal').classList.remove('hidden');
-            document.getElementById('pay-amount').value = '';
-            document.getElementById('pay-amount').focus();
-        }
+    <script src="js/dashboard.js" type="module">
 
-        function closePayModal() {
-            document.getElementById('pay-modal').classList.add('hidden');
-        }
+
     </script>
 
 </body>
