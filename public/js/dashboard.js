@@ -40,7 +40,6 @@ async function getTotalExpense(){
     }catch(err){
         console.log(err)
     }
-
 }
 async function getStudentData(inputRollNo) {
   // 1. Reference the 'users' collection
