@@ -9,6 +9,10 @@ body {
 
     background-image: url('bg.png');
     background-size: cover;
+        background-repeat: no-repeat;
+         background-position: center;
+         background-attachment: fixed;
+
 }
 
 input {
@@ -114,17 +118,20 @@ button {
 /* dashboard */
 #header-name {
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 2rem;
     color: rgb(31, 7, 240);
+        font-family: 'VT323', monospace;
+
 }
 
 .logout-btn {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 300;
     cursor: pointer;
+    font-family: 'VT323', monospace;
     color: white;
     background-color: rgb(31, 7, 240);
 }
