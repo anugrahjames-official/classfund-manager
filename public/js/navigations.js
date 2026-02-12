@@ -10,13 +10,12 @@ function navigateToClassFund() {
 }
 
 function openPayModal() {
-    document.getElementById('pay-modal').classList.remove('hidden');
-    document.getElementById('pay-amount').value = '';
-    document.getElementById('pay-amount').focus();
+    document.getElementById("modalOverlay").classList.add("visible-modal")
+    
 }
 
 function closePayModal() {
-    document.getElementById('pay-modal').classList.add('hidden');
+    document.getElementById("modalOverlay").classList.remove("visible-modal")
 }
 
 export {navigateToClassFund,navigateToHome,openPayModal,closePayModal}
