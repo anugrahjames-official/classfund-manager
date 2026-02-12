@@ -304,3 +304,78 @@ td {
     cursor: pointer;
     color: #64748b;
 }
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    display: none; 
+    align-items: center;
+    justify-content: center;
+    
+}
+.visible-modal{
+    display: flex;
+}
+
+#payment-modal {
+    background-color: white;
+    width: 90%;
+    max-width: 400px; 
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#payment-modal h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.4rem;
+}
+
+#payment-modal p {
+    color: #555;
+    line-height: 1.5;
+    font-size: 0.95rem;
+}
+
+.warning-text {
+    background: #fff4e5;
+    color: #663c00;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin: 15px 0;
+    border-left: 4px solid #ffa117;
+}
+
+#proceedBtn {
+    width: 100%;
+    padding: 12px;
+    background-color: #747df1; 
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#proceedBtn:active {
+    transform: scale(0.98); 
+}
+
+.cancel-link {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: #888;
+    text-decoration: none;
+    cursor: pointer;
+}

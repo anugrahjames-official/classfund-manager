@@ -1,16 +1,23 @@
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { auth } from "./firebase.js";
-import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+  collection, 
+  query, 
+  where, 
+  getDocs, 
+  addDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { db } from "./firebase.js";
 import {navigateToClassFund,navigateToHome,openPayModal,closePayModal} from "./navigations.js"
 
 
 
-
+let username=null
 onAuthStateChanged(auth, (user) => {
   if (user) {
     // 1. Get the username back from the email (e.g., "abdul" from "abdul@cseb.com")
-    const username = Number(user.email.split('@')[0]);
+    username = Number(user.email.split('@')[0]);
     console.log(username)
    
 
@@ -18,6 +25,7 @@ onAuthStateChanged(auth, (user) => {
     
     getStudentData(username); 
     getBalance()
+    
     
   } else {
     // No user is logged in, kick them back to login page
@@ -127,6 +135,35 @@ async function find_balance(){
     }
 
 }
+//payment functions 
+
+
+//open modal
+
+document.getElementById("pay-btn").addEventListener("click",openPayModal)
+document.getElementById("cancel-link").addEventListener("click",closePayModal)
+
+
+async function createPendingDocument(userName){
+  try {
+    // 1. Reference the specific collection
+    const colRef = collection(db, "transactions");
+
+    // 2. Add the document
+    const docRef = await addDoc(colRef, {
+      name: username,
+      status: "pending",
+      createdAt: serverTimestamp() 
+    });
+
+    console.log("Document written with ID: ", docRef.id);
+    alert("Request submitted successfully!");
+  } catch (error) {
+    console.error("Error adding document: ", error);
+  }
+};
+
+document.getElementById("proceedBtn").addEventListener("click",createPendingDocument)
 
 
 

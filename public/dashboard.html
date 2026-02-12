@@ -16,9 +16,24 @@
         <div id="header-name">CSE - B </div>
         <button id="logout-btn" class="logout-btn">Logout</button>
     </nav>
-    <a href="upi://pay?pa=basith@okaxis&pn=Class%20Fund&am=20&cu=INR&tn=Class%20Fund">
-  <button class="pay-btn" onclick="openPayModal()">Pay</button>
-</a>
+   
+  <button class="pay-btn" id="pay-btn">Pay</button>
+  <div class="modal-overlay " id="modalOverlay">
+  <div id="payment-modal">
+    <h2>Wait a second! </h2>
+
+    <p>Are you ready to pay?</p>
+
+    <div class="warning-text">
+      Please <strong>only</strong> click Proceed if you are actually going to make the payment. This helps me keep the transaction records clean!
+    </div>
+
+    <button id="proceedBtn"><form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_SEV0sdmFAzSccJ" async> </script> </form></button>
+    
+    <span class="cancel-link" id="cancel-link">Maybe later</span>
+  </div>
+</div>
+
 
     
     
