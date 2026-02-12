@@ -3,7 +3,8 @@ import { auth } from "./firebase.js";
 import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { db } from "./firebase.js";
 import {navigateToClassFund,navigateToHome,openPayModal,closePayModal} from "./navigations.js"
-// This runs automatically when dashboard.html opens
+
+
 
 
 onAuthStateChanged(auth, (user) => {
@@ -16,7 +17,7 @@ onAuthStateChanged(auth, (user) => {
     // 3. Fetch specific data for THIS user
     
     getStudentData(username); 
-    getTotalExpense()
+    getBalance()
     
   } else {
     // No user is logged in, kick them back to login page
@@ -25,18 +26,20 @@ onAuthStateChanged(auth, (user) => {
 
   
 });
-async function getTotalExpense(){
+async function getBalance(){
     const expenseRef=collection(db,'expenses')
     let totalExpense=0;
     try{
         const querySnapshot = await getDocs(expenseRef);
         querySnapshot.forEach((doc)=>{
             const data=doc.data()
-            totalExpense+= Number(data.amount)
+            totalExpense+= data.amount
         })
-        console.log("total expense:",totalExpense)
-        document.getElementById("total-balance").textContent=totalExpense
-        
+        console.log(totalExpense)
+        let totalCollected=await find_balance()
+        let balance= totalCollected-totalExpense
+       document.getElementById("total-balance").textContent = balance
+              
     }catch(err){
         console.log(err)
     }
@@ -74,6 +77,7 @@ async function getStudentData(inputRollNo) {
 }
 
 document.getElementById("classFund-card").addEventListener("click",()=>{
+  console.log("card")
     navigateToClassFund()
     loadExpenses()
 } )
@@ -98,3 +102,25 @@ async function loadExpenses(){
     }
 
 }
+async function find_balance(){
+    const expenseRef=collection(db,'users')
+    
+    try{
+        const querySnapshot = await getDocs(expenseRef);
+        let total=0
+        querySnapshot.forEach((doc)=>{
+            const data=doc.data()
+            total+=Number(data.totalPaid)
+           
+        })
+        return total
+       
+        
+    }catch(err){
+        console.log(err)
+    }
+
+}
+
+
+

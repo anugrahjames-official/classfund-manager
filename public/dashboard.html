@@ -7,7 +7,7 @@
     <title>CSE - B </title>
     <link href="styles/style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
@@ -16,7 +16,12 @@
         <div id="header-name">CSE - B </div>
         <button id="logout-btn" class="logout-btn">Logout</button>
     </nav>
-    <button class="pay-btn" onclick="openPayModal()">Pay</button>
+    <a href="upi://pay?pa=basith@okaxis&pn=Class%20Fund&am=20&cu=INR&tn=Class%20Fund">
+  <button class="pay-btn" onclick="openPayModal()">Pay</button>
+</a>
+
+    
+    
 
 
     <section id="home-page" class="dashboard">
