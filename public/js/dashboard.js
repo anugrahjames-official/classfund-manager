@@ -44,6 +44,12 @@ async function getBalance(){
         console.log(err)
     }
 }
+
+document.getElementById("logout-btn").addEventListener("click",()=>{
+  console.log("Logged out")
+  window.location.href = "./index.html"
+})
+
 async function getStudentData(inputRollNo) {
   // 1. Reference the 'users' collection
   const usersRef = collection(db, "users");
