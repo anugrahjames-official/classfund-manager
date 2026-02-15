@@ -16,7 +16,7 @@ import {navigateToClassFund,navigateToHome,openPayModal,closePayModal} from "./n
 let username=null
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // 1. Get the username back from the email (e.g., "abdul" from "abdul@cseb.com")
+    // 1. Get the username back from the email
     username = Number(user.email.split('@')[0]);
     console.log(username)
    
@@ -28,7 +28,7 @@ onAuthStateChanged(auth, (user) => {
     
     
   } else {
-    // No user is logged in, kick them back to login page
+   
     window.location.href = "./index.html";
   }
 
@@ -63,18 +63,14 @@ async function getStudentData(inputRollNo) {
   const usersRef = collection(db, "users");
   console.log(usersRef)
 
-  // 2. Create the query
-  // This looks for a document where 'rollNumber' == the one the user typed
   const q = query(usersRef, where("rollNo", "==", inputRollNo));
 
   try {
-    // 3. Execute the query
     const querySnapshot = await getDocs(q);
 
     if (!querySnapshot.empty) {
-      // 4. Loop through results (there should only be one for a unique roll no)
       querySnapshot.forEach((doc) => {
-        const data = doc.data(); // This is the actual object
+        const data = doc.data();
         
         console.log("Found User:", data.name);
         console.log("Total Contributed:", data.totalPaid);
@@ -146,10 +142,8 @@ document.getElementById("cancel-link").addEventListener("click",closePayModal)
 
 async function createPendingDocument(userName){
   try {
-    // 1. Reference the specific collection
     const colRef = collection(db, "transactions");
 
-    // 2. Add the document
     const docRef = await addDoc(colRef, {
       name: username,
       status: "pending",
@@ -167,3 +161,23 @@ document.getElementById("proceedBtn").addEventListener("click",createPendingDocu
 
 
 
+function startMusic(filePath) {
+  const bgm = new Audio(filePath);
+  bgm.loop = true;
+  bgm.volume = 0.15;
+
+  const playAudio = () => {
+    bgm.play()
+      .then(() => {
+        console.log("🔊 Retro BGM Active");
+        window.removeEventListener('click', playAudio);
+        window.removeEventListener('touchstart', playAudio);
+      })
+      .catch(err => console.log("Waiting for user click..."));
+  };
+
+  window.addEventListener('click', playAudio);
+  window.addEventListener('touchstart', playAudio); 
+}
+
+startMusic('./bg.mp3');

@@ -37,7 +37,7 @@ function startMusic(filePath) {
     bgm.play()
       .then(() => {
         console.log("🔊 Retro BGM Active");
-        // Remove listeners so it only triggers once
+      
         window.removeEventListener('click', playAudio);
         window.removeEventListener('touchstart', playAudio);
       })
@@ -48,6 +48,5 @@ function startMusic(filePath) {
   window.addEventListener('touchstart', playAudio); 
 }
 
-// Call it
-startMusic('./bg.mp3');
+hhhstartMusic('./bg.mp3');
 

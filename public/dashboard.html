@@ -16,27 +16,33 @@
         <div id="header-name">CSE - B </div>
         <button id="logout-btn" class="logout-btn">Logout</button>
     </nav>
-   
-  <button class="pay-btn" id="pay-btn">Pay</button>
-  <div class="modal-overlay " id="modalOverlay">
-  <div id="payment-modal">
-    <h2>Wait a second! </h2>
 
-    <p>Are you ready to pay?</p>
+    <button class="pay-btn" id="pay-btn">Pay</button>
+    <div class="modal-overlay " id="modalOverlay">
+        <div id="payment-modal">
+            <h2>Wait a second! </h2>
 
-    <div class="warning-text">
-      Please <strong>only</strong> click Proceed if you are actually going to make the payment. This helps me keep the transaction records clean!
+            <p>Are you ready to pay?</p>
+
+            <div class="warning-text">
+                Please <strong>only</strong> click Proceed if you are actually going to make the payment. This helps me
+                keep the transaction records clean!
+            </div>
+
+            <button id="proceedBtn">
+                <form>
+                    <script src="https://checkout.razorpay.com/v1/payment-button.js"
+                        data-payment_button_id="pl_SEV0sdmFAzSccJ" async> </script>
+                </form>
+            </button>
+
+            <span class="cancel-link" id="cancel-link">Maybe later</span>
+        </div>
     </div>
 
-    <button id="proceedBtn"><form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_SEV0sdmFAzSccJ" async> </script> </form></button>
-    
-    <span class="cancel-link" id="cancel-link">Maybe later</span>
-  </div>
-</div>
 
 
-    
-    
+
 
 
     <section id="home-page" class="dashboard">
@@ -46,11 +52,12 @@
         </div>
         <div class="cards-grid">
             <div class="card" id="classFund-card">
-                <h3>Class Fund</h3>
-                <p>Balance <span id="total-balance">0</span> </p>
-                <small>View All expenses</small>
-
-            </div>
+               
+                    <h3>Class Fund</h3>
+                    <p>Balance <span id="total-balance">0</span> </p>
+                    <small>View All expenses</small>
+               
+            </div> 
             <div class="card">
                 <h3>My payments</h3>
                 <p>Total Paid: <span id="user-total">0</span></p>
@@ -61,7 +68,7 @@
     </section>
     <section id="class-fund-page" class="container hidden">
         <div class="back-btn" id='back-btn'>← Back to Dashboard</div>
-        <h1>Class Fund Transactions</h1>
+        <h1 class="table-head">Class Fund Transactions</h1>
         <div class="table-container">
             <table>
                 <thead>
