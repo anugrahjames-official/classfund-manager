@@ -1,72 +1,88 @@
-import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, query, where, getDocs,orderBy,increment,updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { db } from "./firebase.js";
 
+async function getStudentData(inputRollNo) {
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("rollNo", "==", inputRollNo));
 
+  try {
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      console.log("No student found with that Roll Number.");
+      return;
+    }
+
+    for (const docSnap of querySnapshot.docs) {
+      await updateDoc(docSnap.ref, {
+        totalPaid: increment(20)
+      });
+      console.log(`Updated Roll No: ${inputRollNo}`);
+    }
+
+  } catch (error) {
+    console.error("Error updating student:", error);
+  }
+}
 async function loadUsers() {
-    
+
     const tbody = document.getElementById('student-table');
     const usersRef = collection(db, 'users')
     const minAmount = parseFloat(document.getElementById('min-amount').value) || 0;
-
+    let count=0
 
     try {
         console.log("clicked")
-        const querySnapshot = await getDocs(usersRef);
-       
+        const q = query(usersRef, orderBy("rollNo", "asc"));
+        const querySnapshot = await getDocs(q);
+
         let users = ``
         console.log("frrrr")
         querySnapshot.forEach((doc) => {
             const data = doc.data()
-            
-           
 
+
+            if (data.totalPaid < minAmount) {
                 users += `<tr> 
             <td> ${data.rollNo} </td> 
             <td> ${data.name} </td> 
             <td> ₹${data.totalPaid} </td> 
             <td> ${minAmount - data.totalPaid} </td> 
           </tr>`
-            
+          count++
+            }
+
+
 
         })
 
         tbody.innerHTML = users
-        document.getElementById('total-expenses').textContent  = await getTotalExpense()
+        document.getElementById('total-expenses').textContent = await getTotalExpense()
+        document.getElementById("count-below").textContent=count
 
     } catch (err) {
         console.log(err)
     }
 
 }
-async function getTotalExpense(){
-    const expenseRef=collection(db,'expenses')
-    let totalExpense=0;
-    try{
+async function getTotalExpense() {
+    const expenseRef = collection(db, 'expenses')
+    let totalExpense = 0;
+    try {
         const querySnapshot = await getDocs(expenseRef);
-        querySnapshot.forEach((doc)=>{
-            const data=doc.data()
-            totalExpense+= Number(data.amount)
+        querySnapshot.forEach((doc) => {
+            const data = doc.data()
+            totalExpense += Number(data.amount)
         })
-        console.log("total expense:",totalExpense)
+        console.log("total expense:", totalExpense)
         return totalExpense
-        
-    }catch(err){
+
+    } catch (err) {
         console.log(err)
     }
 }
 
-const students = [
-    { id: "21BCE001", name: "Aarav Sharma", paid: 1000 },
-    { id: "21BCE002", name: "Ananya Iyer", paid: 0 },
-    { id: "21BCE003", name: "Ishaan Patel", paid: 100 },
-    { id: "21BCE004", name: "Kavya Reddy", paid: 450 },
-    { id: "21BCE005", name: "Rohan Das", paid: 750 },
-    { id: "21BCE006", name: "Sanya Malhotra", paid: 0 },
-    { id: "21BCE007", name: "Vikram Singh", paid: 500 },
-    { id: "21BCE008", name: "Zoya Khan", paid: 50 },
-    { id: "21BCE009", name: "Aditya Verma", paid: 200 },
-    { id: "21BCE010", name: "Meera Nair", paid: 1000 }
-];
+
 
 
 function openModal() {
@@ -91,3 +107,4 @@ function saveExpense() {
 }
 
 document.getElementById("filter-btn").addEventListener("click", loadUsers)
+
