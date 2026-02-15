@@ -12,3 +12,6 @@ serviceAccount.json
 # Editor / OS
 .vscode/
 .DS_Store
+
+firebase.json
+.firebaserc
