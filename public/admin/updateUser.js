@@ -1,5 +1,5 @@
 import { collection, query, where, getDocs,orderBy,increment,updateDoc} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { db } from "./firebase.js";
+import { db } from "../js/firebase.js";
 
 export async function getStudentData(inputRollNo) {
   const usersRef = collection(db, "users");
