@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs, orderBy, increment, updateDoc,doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { db } from "../js/firebase.js";
-import {getStudentData} from "./updateUser.js"
+import { db } from "../../js/services/firebase.js";
+import { getStudentData } from "./updateUser.js"
 
 async function loadExpenses() {
     const transactionsRef = collection(db, 'transactions')

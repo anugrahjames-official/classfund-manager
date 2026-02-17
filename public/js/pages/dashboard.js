@@ -1,11 +1,11 @@
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { auth } from "./firebase.js";
-import { navigateToClassFund, navigateToHome, openPayModal, closePayModal } from "./navigations.js"
-import { startMusic } from "./startMusic.js"
-import { find_balance } from "./util.js";
-import { loadExpenses } from "./expense.js";
-import { createPendingDocument } from "./payment.js";
-import { getStudentData } from "./users.js"
+import { auth } from "../services/firebase.js";
+import { navigateToClassFund, navigateToHome, openPayModal, closePayModal } from "../utils/navigations.js"
+import { startMusic } from "../utils/startMusic.js"
+import { find_balance } from "../services/balance.js";
+import { loadExpenses } from "../services/expense.js";
+import { createPendingDocument } from "../services/payment.js";
+import { getStudentData } from "../services/users.js"
 
 let username = null
 onAuthStateChanged(auth, (user) => {

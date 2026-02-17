@@ -1,6 +1,6 @@
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {startMusic} from "./startMusic.js"
-import { auth } from "./firebase.js";
+import {startMusic} from "../utils/startMusic.js"
+import { auth } from "../services/firebase.js";
 
 const loginBtn = document.getElementById("login-btn");
 const userEl = document.getElementById("user");

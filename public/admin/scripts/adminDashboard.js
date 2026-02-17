@@ -1,7 +1,7 @@
 import { collection, query, where, getDocs, orderBy, increment, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { db } from "../js/firebase.js";
-import { find_balance } from "../js/util.js"
-import { get_total_expense } from "../js/expense.js";
+import { db } from "../../js/services/firebase.js";
+import { find_balance } from "../../js/services/balance.js"
+import { get_total_expense } from "../../js/services/expense.js";
 async function loadData() {
 
     document.getElementById("total-balance").textContent = await find_balance()
