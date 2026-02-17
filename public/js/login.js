@@ -21,7 +21,13 @@ loginBtn.addEventListener("click", () => {
   signInWithEmailAndPassword(auth, email, pass)
     .then(() => {
       alert("Login success");
-      setTimeout(() => { window.location.href = "./dashboard.html"; }, 1000);
+      if(user==="admin"){
+        setTimeout(()=>{ window.location.href='./admin/adminDashboard.html'})
+      }else{
+
+                setTimeout(() => { window.location.href = "./dashboard.html"; }, 1000);
+
+      }
     })
     .catch((err) => {
       alert("Login failed");
@@ -30,5 +36,5 @@ loginBtn.addEventListener("click", () => {
 });
 
 
-startMusic('./bg.mp3');
+startMusic("./assets/audio/bg.mp3");
 

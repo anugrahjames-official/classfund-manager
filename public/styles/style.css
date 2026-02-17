@@ -7,7 +7,7 @@
 
 body {
     
-    background-image: url('bg.png');
+    background-image: url('../assets/images/bg.png');
     background-size: cover;
         background-repeat: no-repeat;
          background-position: center;
@@ -161,7 +161,7 @@ button {
 
 .card {
     /* background: #e8dab8; */
-    background-image: url("light-wood.png");
+    background-image: url("../assets/images/light-wood.png");
     background-size: cover;
     
     padding: 2rem;

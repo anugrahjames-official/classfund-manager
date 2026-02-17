@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - CSE-B Class Fund</title>
-    <link href="styles/admin.css" rel="stylesheet">
+    <link href="../styles/admin.css" rel="stylesheet">
 </head>
 <body>
 
     <div class="container">
         <header>
             <h1>Admin Dashboard</h1>
-            <button onclick="location.reload()" style="background: none; border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Refresh Data</button>
+            <a href="transactions.html"> 
+                <button onclick="location.reload()" style="background: none; border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">transactions</button>
+            </a>
         </header>
 
         <div class="stats">
@@ -57,10 +59,10 @@
     </div>
 
     <!-- Floating Add Expense Button -->
-    <button class="fab-expense" onclick="openModal()">
+    <!-- <button class="fab-expense" onclick="openModal()">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
         ADD EXPENSE
-    </button>
+    </button> -->
 
     <!-- Modal for Expense -->
     <div id="expense-modal" class="modal-overlay">
@@ -83,7 +85,7 @@
         </div>
     </div>
 
-    <script src="js/adminDashboard.js" type="module">
+    <script src="adminDashboard.js" type="module">
        
         
     </script>
