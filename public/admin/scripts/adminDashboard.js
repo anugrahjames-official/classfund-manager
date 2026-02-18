@@ -2,6 +2,7 @@ import { collection, query, where, getDocs, orderBy, increment, updateDoc } from
 import { db } from "../../js/services/firebase.js";
 import { find_balance } from "../../js/services/balance.js"
 import { get_total_expense } from "../../js/services/expense.js";
+console.log("adta")
 async function loadData() {
 
     document.getElementById("total-balance").textContent = await find_balance()
