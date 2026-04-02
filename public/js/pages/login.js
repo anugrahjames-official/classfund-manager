@@ -20,7 +20,6 @@ loginBtn.addEventListener("click", () => {
 
   signInWithEmailAndPassword(auth, email, pass)
     .then(() => {
-      alert("Login success");
       if(user==="admin"){
         setTimeout(()=>{ window.location.href='./admin/adminDashboard.html'})
       }else{
