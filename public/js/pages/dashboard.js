@@ -55,8 +55,54 @@ document.getElementById("pay-btn").addEventListener("click", openPayModal)
 
 document.getElementById("cancel-link").addEventListener("click", closePayModal)
 
-document.getElementById("proceedBtn").addEventListener("click",()=>{
-   createPendingDocument(username)
+document.getElementById("proceedBtn").addEventListener("click",async (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  console.log("Proceeding to payment (handler started)")
+  console.log("window.razorpay:", window.razorpay)
+  try {
+    // Step A: Request our backend to create an order
+    const response = await fetch('http://127.0.0.1:5001/class-fund-1465c/us-central1/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rollNo: username, amount: 500 }) // Amount in paise (₹500)
+    });
+
+    const orderData = await response.json();
+    console.log("Order created:", orderData);
+    // Step B: Set up the payment window options
+    const options = {
+      "key": "rzp_test_SpD52f1q7sax0C", // Replace with your test key later
+      "amount": orderData.amount,
+      "currency": "INR",
+      "name": "My Online Store",
+      "order_id": orderData.orderId, // Links this checkout to our backend order
+      "handler": function (response) {
+        console.log("Payment successful:", response);
+        alert("Payment successful! ID: " + response.razorpay_payment_id);
+        const verifyResponse = fetch('http://127.0.0.1:5001/class-fund-1465c/us-central1/api/verify-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(response) // Send the entire response for verification
+        }).then(res => res.json())
+          .then(data => {
+            if (data.status === 'success') {
+              alert("Payment verified successfully!");
+            } else {
+              alert("Payment verification failed.");
+            }
+          });
+      }
+    };
+
+    // Step C: Open the payment window
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch (error) {
+    console.error("Payment failed to initialize:", error);
+    alert("Could not start payment. Is the server running?");
+  }
 })
 
 startMusic('./bg.mp3');
