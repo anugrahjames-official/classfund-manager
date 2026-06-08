@@ -62,28 +62,31 @@ document.getElementById("proceedBtn").addEventListener("click",async (e) => {
   console.log("window.razorpay:", window.razorpay)
   try {
     // Step A: Request our backend to create an order
-    const response = await fetch('http://127.0.0.1:5001/class-fund-1465c/us-central1/api/create-order', {
+    // Note: Razorpay expects `amount` in paise (smallest currency unit). Convert rupees -> paise.
+    const amountRupees = 20; 
+    const amountPaise = amountRupees * 100;
+    const response = await fetch('api/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rollNo: username, amount: 500 }) // Amount in paise (₹500)
+      body: JSON.stringify({ rollNo: username, amount: amountPaise })
     });
 
     const orderData = await response.json();
     console.log("Order created:", orderData);
     // Step B: Set up the payment window options
     const options = {
-      "key": "rzp_test_SpD52f1q7sax0C", // Replace with your test key later
+      "key": "rzp_test_SpD52f1q7sax0C", 
       "amount": orderData.amount,
       "currency": "INR",
       "name": "My Online Store",
-      "order_id": orderData.orderId, // Links this checkout to our backend order
+      "order_id": orderData.orderId, 
       "handler": function (response) {
         console.log("Payment successful:", response);
         alert("Payment successful! ID: " + response.razorpay_payment_id);
-        const verifyResponse = fetch('http://127.0.0.1:5001/class-fund-1465c/us-central1/api/verify-payment', {
+        const verifyResponse = fetch('api/verify-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(response) // Send the entire response for verification
+          body: JSON.stringify(response)
         }).then(res => res.json())
           .then(data => {
             if (data.status === 'success') {
