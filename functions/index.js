@@ -64,26 +64,41 @@ app.post('/verify-payment', async (req, res) => {
       .digest('hex');
 
     if (expectedSignature === razorpay_signature) {
-      
-      // Find the transaction by orderId and update status
       const snapshot = await db.collection("transactions")
         .where("orderId", "==", razorpay_order_id)
         .limit(1)
         .get();
 
       if (!snapshot.empty) {
-        await snapshot.docs[0].ref.update({
+        const transactionDoc = snapshot.docs[0];
+        const { rollNo, amount } = transactionDoc.data(); // grab rollNo + amount
+
+        // 1. Mark transaction as success
+        await transactionDoc.ref.update({
           status: "success",
           paymentId: razorpay_payment_id,
         });
+
+        // 2. Increment totalPaid on the matching user
+        const usersSnapshot = await db.collection("users")
+          .where("rollNo", "==", rollNo)
+          .limit(1)
+          .get();
+
+        if (!usersSnapshot.empty) {
+          await usersSnapshot.docs[0].ref.update({
+            totalPaid: FieldValue.increment(amount / 100) // amount is in paise, convert to ₹
+          });
+          console.log(`totalPaid incremented for rollNo: ${rollNo}`);
+        } else {
+          console.warn(`No user found for rollNo: ${rollNo}`);
+        }
       }
 
       res.status(200).json({ status: "success", message: "Payment verified successfully" });
-
     } else {
       res.status(400).json({ status: "failure", message: "Invalid signature" });
     }
-
   } catch (error) {
     console.error("Verification error:", error);
     res.status(500).json({ error: "Internal Server Error" });
