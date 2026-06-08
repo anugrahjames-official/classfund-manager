@@ -29,12 +29,7 @@
                 keep the transaction records clean!
             </div>
 
-            <button id="proceedBtn">
-                <form>
-                    <script src="https://checkout.razorpay.com/v1/payment-button.js"
-                        data-payment_button_id="pl_SEV0sdmFAzSccJ" async> </script>
-                </form>
-            </button>
+            <button id="proceedBtn" type="button">Proceed</button>
 
             <span class="cancel-link" id="cancel-link">Maybe later</span>
         </div>
@@ -52,12 +47,12 @@
         </div>
         <div class="cards-grid">
             <div class="card" id="classFund-card">
-               
-                    <h3>Class Fund</h3>
-                    <p>Balance <span id="total-balance">0</span> </p>
-                    <small>View All expenses</small>
-               
-            </div> 
+
+                <h3>Class Fund</h3>
+                <p>Balance <span id="total-balance">0</span> </p>
+                <small>View All expenses</small>
+
+            </div>
             <div class="card">
                 <h3>My payments</h3>
                 <p>Total Paid: <span id="user-total">0</span></p>
