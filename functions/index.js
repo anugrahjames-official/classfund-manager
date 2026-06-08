@@ -1,6 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
-
 import {initializeApp} from "firebase-admin/app";
 import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import { onRequest } from "firebase-functions/v2/https";
@@ -19,8 +16,9 @@ initializeApp();
 const db = getFirestore()
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
+  // If process.env is missing during deployment, use a placeholder string so it doesn't crash
+  key_id: process.env.RAZORPAY_KEY_ID || "deployment_placeholder",
+  key_secret: process.env.RAZORPAY_KEY_SECRET || "deployment_placeholder"
 });
 
 app.get("/hello", (req, res) => {
@@ -92,4 +90,4 @@ app.post('/verify-payment', async (req, res) => {
   }
 });
 
-export const api = onRequest(app);
+export const api = onRequest({cors: true}, app);
