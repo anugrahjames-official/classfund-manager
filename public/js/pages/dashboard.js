@@ -66,13 +66,11 @@ document.getElementById("proceedBtn").addEventListener("click", async (e) => {
   try {
 
     // Step A: Request our backend to create an order
-    // Note: Razorpay expects `amount` in paise (smallest currency unit). Convert rupees -> paise.
     const amountRupees = 20;
-    const amountPaise = amountRupees * 100;
     const response = await fetch('api/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' , "Authorization": `Bearer ${idToken}`},
-      body: JSON.stringify({ rollNo: username, amount: amountPaise })
+      body: JSON.stringify({ rollNo: username, amount: amountRupees })
     });
 
     const orderData = await response.json();

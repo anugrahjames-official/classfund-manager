@@ -32,13 +32,15 @@ app.post("/create-order", async (req, res) => {
     console.log("Create order request received with body:", req.body)
     console.log("Authenticated user info:", req.user) // Log decoded token info from middleware
   const { uid, email } = req.user;
-  const { amount, rollNo } = req.body;
+  const { amount: amountRupees, rollNo } = req.body;
   if(req.roll_no !== rollNo){
     return res.status(403).json({ error: "Unauthorized: Roll number mismatch" });
   }
   try {
+    // Firestore stores rupees; only Razorpay needs paise at the gateway boundary.
+    const amountPaise = amountRupees * 100;
     const options = {
-      amount,
+      amount: amountPaise,
       currency: "INR",
     };
     
@@ -48,11 +50,11 @@ app.post("/create-order", async (req, res) => {
       rollNo,
       status: "pending",
       orderId: order.id,
-      amount,
+      amount: amountRupees,
       createdAt: FieldValue.serverTimestamp()
     });
 
-    res.status(200).json({ orderId: order.id, amount });
+    res.status(200).json({ orderId: order.id, amount: amountPaise });
     
   } catch (error) {
     console.error(error);
@@ -94,7 +96,7 @@ app.post('/verify-payment', async (req, res) => {
 
         if (!usersSnapshot.empty) {
           await usersSnapshot.docs[0].ref.update({
-            totalPaid: FieldValue.increment(amount / 100) // amount is in paise, convert to ₹
+            totalPaid: FieldValue.increment(amount) // stored in Firestore as rupees
           });
           console.log(`totalPaid incremented for rollNo: ${rollNo}`);
         } else {
