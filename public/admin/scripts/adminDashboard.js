@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, orderBy, increment, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, query, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { db } from "../../js/services/firebase.js";
 import { find_balance } from "../../js/services/balance.js"
 import { get_total_expense } from "../../js/services/expense.js";
@@ -59,18 +59,6 @@ async function loadUsers() {
     }
 
 }
-
-
-
-// function openModal() {
-//     document.getElementById('expense-modal').style.display = 'flex';
-// }
-
-// function closeModal() {
-//     document.getElementById('expense-modal').style.display = 'none';
-// }
-
-
 
 document.getElementById("filter-btn").addEventListener("click", loadUsers)
 
