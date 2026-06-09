@@ -55,19 +55,23 @@ document.getElementById("pay-btn").addEventListener("click", openPayModal)
 
 document.getElementById("cancel-link").addEventListener("click", closePayModal)
 
-document.getElementById("proceedBtn").addEventListener("click",async (e) => {
+document.getElementById("proceedBtn").addEventListener("click", async (e) => {
   e.preventDefault();
   e.stopPropagation();
   console.log("Proceeding to payment (handler started)")
   console.log("window.razorpay:", window.razorpay)
+  const user =auth.currentUser;
+  const idToken = await user.getIdToken()
+  console.log("ID Token:", idToken)
   try {
+
     // Step A: Request our backend to create an order
     // Note: Razorpay expects `amount` in paise (smallest currency unit). Convert rupees -> paise.
-    const amountRupees = 20; 
+    const amountRupees = 20;
     const amountPaise = amountRupees * 100;
     const response = await fetch('api/create-order', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' , "Authorization": `Bearer ${idToken}`},
       body: JSON.stringify({ rollNo: username, amount: amountPaise })
     });
 
@@ -75,11 +79,11 @@ document.getElementById("proceedBtn").addEventListener("click",async (e) => {
     console.log("Order created:", orderData);
     // Step B: Set up the payment window options
     const options = {
-      "key": "rzp_test_SpD52f1q7sax0C", 
+      "key": "rzp_test_SpD52f1q7sax0C",
       "amount": orderData.amount,
       "currency": "INR",
       "name": "My Online Store",
-      "order_id": orderData.orderId, 
+      "order_id": orderData.orderId,
       "handler": function (response) {
         console.log("Payment successful:", response);
         alert("Payment successful! ID: " + response.razorpay_payment_id);

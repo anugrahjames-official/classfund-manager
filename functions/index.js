@@ -5,11 +5,14 @@ import express from "express";
 import cors from "cors";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-
+import dotenv from "dotenv";
+import { verifyToken } from "./middleware/auth.js";
+dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(verifyToken);
 
 
 initializeApp();
@@ -27,6 +30,8 @@ app.get("/hello", (req, res) => {
 
 app.post("/create-order", async (req, res) => {
     console.log("Create order request received with body:", req.body)
+    console.log("Authenticated user info:", req.user) // Log decoded token info from middleware
+  const { uid, email } = req.user;
   const { amount, rollNo } = req.body;
   
   try {
