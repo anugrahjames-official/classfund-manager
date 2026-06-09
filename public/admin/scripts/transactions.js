@@ -7,30 +7,36 @@ async function loadExpenses() {
 
     try {
         const querySnapshot = await getDocs(transactionsRef);
-        let expenses = ``
+        const tableBody = document.getElementById("class-fund-table2");
+        tableBody.innerHTML = "";
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const id = doc.id;
 
             if (data.status === "pending") {
-                expenses += `
-            <tr> 
-                <td> ${data.createdAt.toDate().toLocaleDateString()} </td> 
-                <td> ${data.name} </td>  
-                <td> ${data.status} </td>
-                <td> 
-                    <button class="approve-btn" 
-                            data-id="${id}" 
-                            data-roll="${data.name}" 
-                            >
-                        Approve
-                    </button> 
-                </td>
-            </tr>`;
+                const row = document.createElement("tr");
+
+                const dateCell = document.createElement("td");
+                dateCell.textContent = data.createdAt.toDate().toLocaleDateString();
+
+                const nameCell = document.createElement("td");
+                nameCell.textContent = data.name;
+
+                const statusCell = document.createElement("td");
+                statusCell.textContent = data.status;
+
+                const actionCell = document.createElement("td");
+                const button = document.createElement("button");
+                button.className = "approve-btn";
+                button.dataset.id = id;
+                button.dataset.roll = data.name;
+                button.textContent = "Approve";
+
+                actionCell.appendChild(button);
+                row.append(dateCell, nameCell, statusCell, actionCell);
+                tableBody.appendChild(row);
             }
         });
-
-        document.getElementById("class-fund-table2").innerHTML = expenses
 
     } catch (err) {
         console.log(err)

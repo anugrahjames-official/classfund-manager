@@ -2,7 +2,7 @@ import { collection, query, where, getDocs, orderBy, increment, updateDoc } from
 import { db } from "../../js/services/firebase.js";
 import { find_balance } from "../../js/services/balance.js"
 import { get_total_expense } from "../../js/services/expense.js";
-console.log("adta")
+
 async function loadData() {
 
     document.getElementById("total-balance").textContent = await find_balance()
@@ -22,19 +22,29 @@ async function loadUsers() {
         const q = query(usersRef, orderBy("rollNo", "asc"));
         const querySnapshot = await getDocs(q);
 
-        let users = ``
         console.log("frrrr")
+        tbody.innerHTML = ""
         querySnapshot.forEach((doc) => {
             const data = doc.data()
 
 
             if (data.totalPaid < minAmount) {
-                users += `<tr> 
-            <td> ${data.rollNo} </td> 
-            <td> ${data.name} </td> 
-            <td> ₹${data.totalPaid} </td> 
-            <td> ${minAmount - data.totalPaid} </td> 
-          </tr>`
+                const row = document.createElement("tr");
+
+                const rollNoCell = document.createElement("td");
+                rollNoCell.textContent = data.rollNo;
+
+                const nameCell = document.createElement("td");
+                nameCell.textContent = data.name;
+
+                const paidCell = document.createElement("td");
+                paidCell.textContent = `₹${data.totalPaid}`;
+
+                const dueCell = document.createElement("td");
+                dueCell.textContent = minAmount - data.totalPaid;
+
+                row.append(rollNoCell, nameCell, paidCell, dueCell);
+                tbody.appendChild(row);
                 count++
             }
 
@@ -42,7 +52,6 @@ async function loadUsers() {
 
         })
 
-        tbody.innerHTML = users
         document.getElementById("count-below").textContent = count
 
     } catch (err) {
