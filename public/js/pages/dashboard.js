@@ -11,7 +11,6 @@ let username = null
 onAuthStateChanged(auth, (user) => {
   if (user) {
     username = Number(user.email.split('@')[0]);
-    console.log(username)
 
     start()
 
@@ -37,13 +36,11 @@ async function start() {
 
 //logout function 
 document.getElementById("logout-btn").addEventListener("click", () => {
-  console.log("Logged out")
   window.location.href = "./index.html"
 })
 
 
 document.getElementById("classFund-card").addEventListener("click", () => {
-  console.log("card")
   navigateToClassFund()
   loadExpenses()
 
@@ -55,34 +52,30 @@ document.getElementById("pay-btn").addEventListener("click", openPayModal)
 
 document.getElementById("cancel-link").addEventListener("click", closePayModal)
 
-document.getElementById("proceedBtn").addEventListener("click",async (e) => {
+document.getElementById("proceedBtn").addEventListener("click", async (e) => {
   e.preventDefault();
   e.stopPropagation();
-  console.log("Proceeding to payment (handler started)")
-  console.log("window.razorpay:", window.razorpay)
+  const user =auth.currentUser;
+  const idToken = await user.getIdToken()
   try {
+
     // Step A: Request our backend to create an order
-    // Note: Razorpay expects `amount` in paise (smallest currency unit). Convert rupees -> paise.
-    const amountRupees = 20; 
-    const amountPaise = amountRupees * 100;
     const response = await fetch('api/create-order', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rollNo: username, amount: amountPaise })
+      headers: { 'Content-Type': 'application/json' , "Authorization": `Bearer ${idToken}`},
+      body: JSON.stringify({ rollNo: username })
     });
 
     const orderData = await response.json();
-    console.log("Order created:", orderData);
     // Step B: Set up the payment window options
     const options = {
-      "key": "rzp_test_SpD52f1q7sax0C", 
+      "key": "rzp_public_key_placeholder",
       "amount": orderData.amount,
       "currency": "INR",
       "name": "My Online Store",
-      "order_id": orderData.orderId, 
+      "order_id": orderData.orderId,
       "handler": function (response) {
-        console.log("Payment successful:", response);
-        alert("Payment successful! ID: " + response.razorpay_payment_id);
+        alert("Payment received. Verifying payment...");
         const verifyResponse = fetch('api/verify-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -103,7 +96,6 @@ document.getElementById("proceedBtn").addEventListener("click",async (e) => {
     rzp.open();
 
   } catch (error) {
-    console.error("Payment failed to initialize:", error);
     alert("Could not start payment. Is the server running?");
   }
 })

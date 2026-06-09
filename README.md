@@ -1,79 +1,342 @@
 # Class Fund Manager
 
-A lightweight web app built to solve a real problem — collecting and tracking class fund contributions for a 63-student college class. Built and deployed by the class CR (that's me) with zero budget and zero backend server.
+A lightweight payment and transparency platform built for managing class fund contributions in a 63-student college class.
 
-60+ students have paid through this.
+The application was created to replace manual cash collection, reduce confusion around payment status, and provide complete visibility into how class funds are collected and spent.
+
+More than 60 students have successfully contributed through the platform.
 
 ---
 
 ## The Problem
 
-Managing a class fund manually is a mess. Cash goes missing, people forget whether they've paid, and the CR has no way to show transparency. I needed something quick, real, and actually usable by non-technical classmates.
+Managing a class fund manually creates several issues:
 
-## What It Does
+* Students forget whether they have paid
+* The class representative must track payments manually
+* Fund balances are difficult to verify
+* Expense records are scattered across chats and spreadsheets
+* Transparency is limited
 
-**For Students**
-- Login with roll number and password
-- See the current class fund balance
-- View all recorded expenses (what the money was spent on)
-- Pay contributions directly via Razorpay
+This project centralizes the entire process into a single web application where students can contribute, verify payments, and view fund usage.
 
-**For Admin (CR)**
-- Dashboard showing total collected, total expenses, and net balance
-- Filter students by minimum contribution — instantly see who's behind
-- Transaction log for all payments
-- Record expenses against the fund
+---
+
+## Features
+
+### Student Portal
+
+* Secure login using Firebase Authentication
+* Roll-number-based identity system
+* View current class fund balance
+* View recorded expenses
+* Make the fixed ₹20 class contribution through Razorpay
+* View personal payment status
+
+### Admin Portal
+
+* View payment status of all students
+* View transaction history
+* Monitor overall fund collection
+* Read-only transaction visibility
+* Access restricted to the designated admin account
+
+---
 
 ## Tech Stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| Frontend | Vanilla HTML, CSS, JS | No build step, fast to ship |
-| Auth | Firebase Authentication | Roll number → email pattern, simple and secure |
-| Database | Cloud Firestore | Real-time, no server needed |
-| Payments | Razorpay Payment Button | Easiest integration for Indian payments |
-| Hosting | Firebase Hosting | Free tier, instant deploys |
+| Layer          | Technology                    |
+| -------------- | ----------------------------- |
+| Frontend       | HTML, CSS, Vanilla JavaScript |
+| Authentication | Firebase Authentication       |
+| Database       | Cloud Firestore               |
+| Payments       | Razorpay Checkout             |
+| Backend        | Firebase Cloud Functions      |
+| Hosting        | Firebase Hosting              |
+
+---
+
+## Architecture
+
+```text
+Student
+   │
+   ▼
+Firebase Auth
+   │
+   ▼
+Frontend (HTML/CSS/JS)
+   │
+   ├── Firestore Reads
+   │
+   └── Payment Request
+           │
+           ▼
+Firebase Cloud Function
+           │
+           ▼
+      Razorpay
+           │
+           ▼
+ Payment Verification
+           │
+           ▼
+Firestore Transaction
+```
+
+---
+
+## Security Model
+
+### Authentication
+
+Students authenticate through Firebase Authentication using a roll-number-based email pattern.
+
+Example:
+
+```text
+22bcs001@cseb.com
+```
+
+### Payment Security
+
+Payments are not trusted from the frontend.
+
+The backend:
+
+1. Creates Razorpay orders
+2. Verifies Razorpay signatures
+3. Uses Firestore transactions for settlement
+4. Updates payment records only after verification
+
+### Firestore Access
+
+* Students can access only data required for the application flow
+* Transaction records cannot be modified from the client
+* Administrative transaction views are restricted to:
+
+```text
+admin@cseb.com
+```
+
+### Idempotency
+
+Payment settlement is protected against duplicate processing through Firestore transaction-based guards.
+
+---
+
+## Data Model
+
+### users
+
+Stores student information.
+
+```javascript
+{
+  uid,
+  rollNo,
+  name,
+  totalPaid
+}
+```
+
+### expenses
+
+Stores class expenditure records.
+
+```javascript
+{
+  title,
+  amount,
+  description,
+  createdAt
+}
+```
+
+### transactions
+
+Stores payment lifecycle information.
+
+```javascript
+{
+  orderId,
+  paymentId,
+  status,
+  amount,
+  createdAt
+}
+```
+
+---
 
 ## Project Structure
 
-```
+```text
 public/
-├── index.html              # Login page
-├── dashboard.html          # Student dashboard
+├── index.html
+├── dashboard.html
 ├── admin/
-│   ├── adminDashboard.html # Admin overview + defaulter filter
-│   ├── transactions.html   # Payment transaction log
-│   └── scripts/            # Admin-specific JS
+│   ├── adminDashboard.html
+│   ├── transactions.html
+│   └── scripts/
 ├── js/
-│   ├── pages/              # Page-level logic (login, dashboard)
-│   ├── services/           # Firebase interactions (balance, expenses, users, payments)
-│   └── utils/              # Navigation helpers, music
-└── styles/                 # CSS for student and admin views
+│   ├── pages/
+│   ├── services/
+│   └── utils/
+└── styles/
+
+functions/
+├── index.js
+└── middleware/
 ```
 
-## Key Design Decisions
+---
 
-**Vanilla JS over React** — This project didn't need a framework. Adding React would have added build complexity with zero user-facing benefit. Kept it simple on purpose.
+## Local Development
 
-**Firebase direct access** — Security is handled through Firestore Rules (auth-gated), not by hiding the database behind a custom server. This is the standard pattern for Firebase apps and the right call for this scale.
+### Prerequisites
 
-**Roll number as identity** — Students log in with their roll number. Behind the scenes it maps to `rollno@cseb.com` in Firebase Auth. No need for students to remember or set up email accounts.
+* Node.js
+* Firebase CLI
+* Firebase Project
+* Razorpay Account
 
-**Razorpay Payment Button** — Fastest path to real payments in India. Embedded directly in the frontend, no server required for basic collection.
+### Clone
 
-## What I Learned
+```bash
+git clone <repository-url>
+cd class-fund-manager
+```
 
-- Firebase Auth + Firestore from scratch (first real project using it)
-- Structuring a JS project without a framework — services layer, page controllers, utils
-- Integrating a real payment gateway with actual money flowing through it
-- Building for non-technical users: the UI had to be dead simple, no onboarding
+### Install Functions Dependencies
 
-## What's Next
+```bash
+cd functions
+npm install
+```
 
-- [ ] Firestore Security Rules — tighten auth-gated access
-- [ ] Razorpay webhook via Firebase Cloud Functions — auto-verify payments instead of manual admin review
-- [ ] Mario-themed UI redesign (current version has a retro aesthetic, taking it further)
+### Configure Firebase
 
-## Context
+Create the Firebase configuration inside the frontend application.
 
-Built during Semester 4 of B.Tech CSE. Deployed and actively used — not a demo project.
+### Configure Razorpay Secrets
+
+```bash
+firebase functions:config:set \
+razorpay.key_id="YOUR_KEY_ID" \
+razorpay.key_secret="YOUR_KEY_SECRET"
+```
+
+### Run Locally
+
+```bash
+firebase emulators:start
+```
+
+### Deploy
+
+```bash
+firebase deploy
+```
+
+---
+
+## Design Decisions
+
+### Vanilla JavaScript
+
+The project intentionally avoids frontend frameworks.
+
+For a small internal application:
+
+* Faster development
+* No build pipeline
+* Minimal dependencies
+* Easier maintenance
+
+### Firebase
+
+Firebase provides:
+
+* Authentication
+* Database
+* Hosting
+* Serverless backend
+
+without requiring server management.
+
+### Fixed Contribution Amount
+
+The application collects a fixed ₹20 contribution.
+
+The amount is enforced by the backend rather than trusted from the frontend.
+
+---
+
+## Future Improvements
+
+- Enhanced admin panel with additional management features (the current version intentionally focuses on the core payment workflow)
+- Razorpay webhook integration for additional payment reliability and reconciliation
+- Audit logs for administrative actions and expense tracking
+- Analytics dashboard with contribution and expense insights
+- Improved mobile responsiveness across devices
+- Automated contribution reminders for pending payments
+
+---
+
+## Lessons Learned
+
+Building this project provided practical experience with:
+
+
+* Cloud Functions
+* Payment gateway integrations
+* Payment verification workflows
+* Idempotent transaction handling
+* Deploying production applications
+
+---
+
+## Contributing
+
+Contributions are welcome.
+
+If you would like to improve the project:
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature/my-feature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add my feature"
+```
+
+4. Push to your branch
+
+```bash
+git push origin feature/my-feature
+```
+
+5. Open a Pull Request
+
+Please keep contributions focused, well-documented, and aligned with the project's scope.
+
+---
+
+## Disclaimer
+
+This project was built for a private college class and is not intended to operate as a public payment platform.
+
+
+---
+
+## License
+
+MIT License
+
+Feel free to use, modify, and learn from this project.

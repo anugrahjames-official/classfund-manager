@@ -19,7 +19,7 @@ export async function get_total_expense() {
     return totalExpense
 
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 }
 
@@ -29,17 +29,28 @@ export async function loadExpenses() {
 
   try {
     const querySnapshot = await getDocs(expenseRef);
-    let expenses = ``
+    const tableBody = document.getElementById("class-fund-table")
+    tableBody.textContent = ""
     querySnapshot.forEach((doc) => {
       const data = doc.data()
-      expenses += `<tr> <td> ${data.date} </td> <td> ${data.item} </td>  <td> ${data.amount} </td></tr>`
+
+      const row = document.createElement("tr")
+
+      const dateCell = document.createElement("td")
+      dateCell.textContent = data.date
+
+      const itemCell = document.createElement("td")
+      itemCell.textContent = data.item
+
+      const amountCell = document.createElement("td")
+      amountCell.textContent = data.amount
+
+      row.append(dateCell, itemCell, amountCell)
+      tableBody.appendChild(row)
     })
 
-    console.log(expenses)
-    document.getElementById("class-fund-table").innerHTML = expenses
-
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 
 }

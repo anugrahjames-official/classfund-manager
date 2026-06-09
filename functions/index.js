@@ -5,7 +5,9 @@ import express from "express";
 import cors from "cors";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-
+import dotenv from "dotenv";
+import { verifyToken } from "./middleware/auth.js";
+dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 app.use(cors());
@@ -25,27 +27,31 @@ app.get("/hello", (req, res) => {
   res.send("Hello, World!");
 });
 
-app.post("/create-order", async (req, res) => {
-    console.log("Create order request received with body:", req.body)
-  const { amount, rollNo } = req.body;
-  
+app.post("/create-order", verifyToken, async (req, res) => {
+  const { rollNo } = req.body;
+  if(req.roll_no !== rollNo){
+    return res.status(403).json({ error: "Unauthorized: Roll number mismatch" });
+  }
   try {
+    // The class fund contribution is fixed at ₹20 for this app.
+    const amountRupees = 20;
+    const amountPaise = amountRupees * 100;
     const options = {
-      amount,
+      amount: amountPaise,
       currency: "INR",
     };
     
     const order = await razorpay.orders.create(options);
 
-    await db.collection("transactions").add({
+    await db.collection("transactions").doc(order.id).set({
       rollNo,
       status: "pending",
       orderId: order.id,
-      amount,
+      amount: amountRupees,
       createdAt: FieldValue.serverTimestamp()
     });
 
-    res.status(200).json({ orderId: order.id, amount });
+    res.status(200).json({ orderId: order.id, amount: amountPaise });
     
   } catch (error) {
     console.error(error);
@@ -64,38 +70,50 @@ app.post('/verify-payment', async (req, res) => {
       .digest('hex');
 
     if (expectedSignature === razorpay_signature) {
-      const snapshot = await db.collection("transactions")
-        .where("orderId", "==", razorpay_order_id)
-        .limit(1)
-        .get();
+      const transactionRef = db.collection("transactions").doc(razorpay_order_id);
+      const result = await db.runTransaction(async (transaction) => {
+        const transactionSnap = await transaction.get(transactionRef);
 
-      if (!snapshot.empty) {
-        const transactionDoc = snapshot.docs[0];
-        const { rollNo, amount } = transactionDoc.data(); // grab rollNo + amount
+        if (!transactionSnap.exists) {
+          return { status: "not_found" };
+        }
 
-        // 1. Mark transaction as success
-        await transactionDoc.ref.update({
+        const transactionData = transactionSnap.data();
+
+        if (transactionData.status !== "pending") {
+          return { status: "already_processed" };
+        }
+
+        const usersQuery = db.collection("users")
+          .where("rollNo", "==", transactionData.rollNo)
+          .limit(1);
+        const usersSnapshot = await transaction.get(usersQuery);
+
+        if (usersSnapshot.empty) {
+          throw new Error(`No user found for rollNo: ${transactionData.rollNo}`);
+        }
+
+        const userRef = usersSnapshot.docs[0].ref;
+        transaction.update(transactionRef, {
           status: "success",
           paymentId: razorpay_payment_id,
         });
+        transaction.update(userRef, {
+          totalPaid: FieldValue.increment(transactionData.amount)
+        });
 
-        // 2. Increment totalPaid on the matching user
-        const usersSnapshot = await db.collection("users")
-          .where("rollNo", "==", rollNo)
-          .limit(1)
-          .get();
+        return { status: "success" };
+      });
 
-        if (!usersSnapshot.empty) {
-          await usersSnapshot.docs[0].ref.update({
-            totalPaid: FieldValue.increment(amount / 100) // amount is in paise, convert to ₹
-          });
-          console.log(`totalPaid incremented for rollNo: ${rollNo}`);
-        } else {
-          console.warn(`No user found for rollNo: ${rollNo}`);
-        }
+      if (result.status === "success") {
+        return res.status(200).json({ status: "success", message: "Payment verified successfully" });
       }
 
-      res.status(200).json({ status: "success", message: "Payment verified successfully" });
+      if (result.status === "already_processed") {
+        return res.status(200).json({ status: "success", message: "Payment already verified" });
+      }
+
+      return res.status(404).json({ status: "failure", message: "Transaction not found" });
     } else {
       res.status(400).json({ status: "failure", message: "Invalid signature" });
     }

@@ -15,7 +15,7 @@ export async function createPendingDocument(username) {
       createdAt: serverTimestamp()
     });
 
-    console.log("Document written with ID: ", docRef.id);
+      console.info("Document written with ID:", docRef.id);
   } catch (error) {
     console.error("Error adding document: ", error);
   }
