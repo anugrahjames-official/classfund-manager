@@ -23,7 +23,7 @@ async function loadUsers() {
         const querySnapshot = await getDocs(q);
 
         console.log("frrrr")
-        tbody.innerHTML = ""
+        tbody.textContent = ""
         querySnapshot.forEach((doc) => {
             const data = doc.data()
 

@@ -8,7 +8,7 @@ async function loadExpenses() {
     try {
         const querySnapshot = await getDocs(transactionsRef);
         const tableBody = document.getElementById("class-fund-table2");
-        tableBody.innerHTML = "";
+        tableBody.textContent = "";
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const id = doc.id;
