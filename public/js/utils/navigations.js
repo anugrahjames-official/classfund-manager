@@ -1,5 +1,4 @@
 function navigateToHome() {
-    console.log("clicked");
     document.getElementById("class-fund-page").classList.toggle("hidden");
     document.getElementById("home-page").classList.toggle("hidden");
 }

@@ -32,7 +32,7 @@ async function get_total_collected() {
 
 
   } catch (err) {
-    console.log(err)
+      console.error(err)
   }
 
 }

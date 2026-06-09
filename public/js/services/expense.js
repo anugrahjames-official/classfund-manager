@@ -19,7 +19,7 @@ export async function get_total_expense() {
     return totalExpense
 
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 }
 
@@ -50,7 +50,7 @@ export async function loadExpenses() {
     })
 
   } catch (err) {
-    console.log(err)
+    console.error(err)
   }
 
 }

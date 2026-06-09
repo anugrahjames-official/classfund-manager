@@ -11,7 +11,6 @@ let username = null
 onAuthStateChanged(auth, (user) => {
   if (user) {
     username = Number(user.email.split('@')[0]);
-    console.log(username)
 
     start()
 
@@ -37,13 +36,11 @@ async function start() {
 
 //logout function 
 document.getElementById("logout-btn").addEventListener("click", () => {
-  console.log("Logged out")
   window.location.href = "./index.html"
 })
 
 
 document.getElementById("classFund-card").addEventListener("click", () => {
-  console.log("card")
   navigateToClassFund()
   loadExpenses()
 
@@ -58,32 +55,26 @@ document.getElementById("cancel-link").addEventListener("click", closePayModal)
 document.getElementById("proceedBtn").addEventListener("click", async (e) => {
   e.preventDefault();
   e.stopPropagation();
-  console.log("Proceeding to payment (handler started)")
-  console.log("window.razorpay:", window.razorpay)
   const user =auth.currentUser;
   const idToken = await user.getIdToken()
-  console.log("ID Token:", idToken)
   try {
 
     // Step A: Request our backend to create an order
-    const amountRupees = 20;
     const response = await fetch('api/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' , "Authorization": `Bearer ${idToken}`},
-      body: JSON.stringify({ rollNo: username, amount: amountRupees })
+      body: JSON.stringify({ rollNo: username })
     });
 
     const orderData = await response.json();
-    console.log("Order created:", orderData);
     // Step B: Set up the payment window options
     const options = {
-      "key": "razorypayapi_key_id",
+      "key": "rzp_public_key_placeholder",
       "amount": orderData.amount,
       "currency": "INR",
       "name": "My Online Store",
       "order_id": orderData.orderId,
       "handler": function (response) {
-        console.log("Payment successful:", response);
         alert("Payment received. Verifying payment...");
         const verifyResponse = fetch('api/verify-payment', {
           method: 'POST',
@@ -105,7 +96,6 @@ document.getElementById("proceedBtn").addEventListener("click", async (e) => {
     rzp.open();
 
   } catch (error) {
-    console.error("Payment failed to initialize:", error);
     alert("Could not start payment. Is the server running?");
   }
 })

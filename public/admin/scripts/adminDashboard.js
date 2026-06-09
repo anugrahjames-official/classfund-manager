@@ -18,11 +18,9 @@ async function loadUsers() {
     let count = 0
 
     try {
-        console.log("clicked")
         const q = query(usersRef, orderBy("rollNo", "asc"));
         const querySnapshot = await getDocs(q);
 
-        console.log("frrrr")
         tbody.textContent = ""
         querySnapshot.forEach((doc) => {
             const data = doc.data()
@@ -55,7 +53,7 @@ async function loadUsers() {
         document.getElementById("count-below").textContent = count
 
     } catch (err) {
-        console.log(err)
+        console.error(err)
     }
 
 }
