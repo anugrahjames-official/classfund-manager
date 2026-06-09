@@ -84,7 +84,7 @@ document.getElementById("proceedBtn").addEventListener("click", async (e) => {
       "order_id": orderData.orderId,
       "handler": function (response) {
         console.log("Payment successful:", response);
-        alert("Payment successful! ID: " + response.razorpay_payment_id);
+        alert("Payment received. Verifying payment...");
         const verifyResponse = fetch('api/verify-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

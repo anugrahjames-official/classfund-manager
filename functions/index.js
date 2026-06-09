@@ -12,7 +12,6 @@ dotenv.config(); // Load environment variables from .env file
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(verifyToken);
 
 
 initializeApp();
@@ -28,7 +27,7 @@ app.get("/hello", (req, res) => {
   res.send("Hello, World!");
 });
 
-app.post("/create-order", async (req, res) => {
+app.post("/create-order", verifyToken, async (req, res) => {
     console.log("Create order request received with body:", req.body)
     console.log("Authenticated user info:", req.user) // Log decoded token info from middleware
   const { uid, email } = req.user;
@@ -46,7 +45,7 @@ app.post("/create-order", async (req, res) => {
     
     const order = await razorpay.orders.create(options);
 
-    await db.collection("transactions").add({
+    await db.collection("transactions").doc(order.id).set({
       rollNo,
       status: "pending",
       orderId: order.id,
@@ -73,38 +72,50 @@ app.post('/verify-payment', async (req, res) => {
       .digest('hex');
 
     if (expectedSignature === razorpay_signature) {
-      const snapshot = await db.collection("transactions")
-        .where("orderId", "==", razorpay_order_id)
-        .limit(1)
-        .get();
+      const transactionRef = db.collection("transactions").doc(razorpay_order_id);
+      const result = await db.runTransaction(async (transaction) => {
+        const transactionSnap = await transaction.get(transactionRef);
 
-      if (!snapshot.empty) {
-        const transactionDoc = snapshot.docs[0];
-        const { rollNo, amount } = transactionDoc.data(); // grab rollNo + amount
+        if (!transactionSnap.exists) {
+          return { status: "not_found" };
+        }
 
-        // 1. Mark transaction as success
-        await transactionDoc.ref.update({
+        const transactionData = transactionSnap.data();
+
+        if (transactionData.status !== "pending") {
+          return { status: "already_processed" };
+        }
+
+        const usersQuery = db.collection("users")
+          .where("rollNo", "==", transactionData.rollNo)
+          .limit(1);
+        const usersSnapshot = await transaction.get(usersQuery);
+
+        if (usersSnapshot.empty) {
+          throw new Error(`No user found for rollNo: ${transactionData.rollNo}`);
+        }
+
+        const userRef = usersSnapshot.docs[0].ref;
+        transaction.update(transactionRef, {
           status: "success",
           paymentId: razorpay_payment_id,
         });
+        transaction.update(userRef, {
+          totalPaid: FieldValue.increment(transactionData.amount)
+        });
 
-        // 2. Increment totalPaid on the matching user
-        const usersSnapshot = await db.collection("users")
-          .where("rollNo", "==", rollNo)
-          .limit(1)
-          .get();
+        return { status: "success" };
+      });
 
-        if (!usersSnapshot.empty) {
-          await usersSnapshot.docs[0].ref.update({
-            totalPaid: FieldValue.increment(amount) // stored in Firestore as rupees
-          });
-          console.log(`totalPaid incremented for rollNo: ${rollNo}`);
-        } else {
-          console.warn(`No user found for rollNo: ${rollNo}`);
-        }
+      if (result.status === "success") {
+        return res.status(200).json({ status: "success", message: "Payment verified successfully" });
       }
 
-      res.status(200).json({ status: "success", message: "Payment verified successfully" });
+      if (result.status === "already_processed") {
+        return res.status(200).json({ status: "success", message: "Payment already verified" });
+      }
+
+      return res.status(404).json({ status: "failure", message: "Transaction not found" });
     } else {
       res.status(400).json({ status: "failure", message: "Invalid signature" });
     }
