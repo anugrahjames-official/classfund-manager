@@ -33,7 +33,9 @@ app.post("/create-order", async (req, res) => {
     console.log("Authenticated user info:", req.user) // Log decoded token info from middleware
   const { uid, email } = req.user;
   const { amount, rollNo } = req.body;
-  
+  if(req.roll_no !== rollNo){
+    return res.status(403).json({ error: "Unauthorized: Roll number mismatch" });
+  }
   try {
     const options = {
       amount,

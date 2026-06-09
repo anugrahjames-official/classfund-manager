@@ -12,6 +12,7 @@ export const verifyToken = async (req, res, next) => {
   try {
     const decoded = await getAuth().verifyIdToken(idToken);
     req.user = decoded; // uid, email, etc. now available in route handlers
+    req.roll_no=Number(decoded.email.split('@')[0]);
     next();
   } catch (error) {
     console.error("Token verification failed:", error.message);
