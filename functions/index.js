@@ -28,15 +28,13 @@ app.get("/hello", (req, res) => {
 });
 
 app.post("/create-order", verifyToken, async (req, res) => {
-    console.log("Create order request received with body:", req.body)
-    console.log("Authenticated user info:", req.user) // Log decoded token info from middleware
-  const { uid, email } = req.user;
-  const { amount: amountRupees, rollNo } = req.body;
+  const { rollNo } = req.body;
   if(req.roll_no !== rollNo){
     return res.status(403).json({ error: "Unauthorized: Roll number mismatch" });
   }
   try {
-    // Firestore stores rupees; only Razorpay needs paise at the gateway boundary.
+    // The class fund contribution is fixed at ₹20 for this app.
+    const amountRupees = 20;
     const amountPaise = amountRupees * 100;
     const options = {
       amount: amountPaise,
