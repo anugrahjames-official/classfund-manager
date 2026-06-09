@@ -77,7 +77,7 @@ document.getElementById("proceedBtn").addEventListener("click", async (e) => {
     console.log("Order created:", orderData);
     // Step B: Set up the payment window options
     const options = {
-      "key": "rzp_test_SpD52f1q7sax0C",
+      "key": "razorypayapi_key_id",
       "amount": orderData.amount,
       "currency": "INR",
       "name": "My Online Store",
