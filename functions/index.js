@@ -54,7 +54,7 @@ app.post("/create-order", verifyToken, async (req, res) => {
       amount: amountPaise,
       currency: "INR",
     };
-    
+
     const order = await razorpay.orders.create(options);
 
     await db.collection("contributions").doc(order.id).set({
@@ -66,9 +66,8 @@ app.post("/create-order", verifyToken, async (req, res) => {
       amount: amount,
       createdAt: FieldValue.serverTimestamp()
     });
+    res.status(200).json({ orderId: order.id, amount: amountPaise, key: process.env.RAZORPAY_KEY_ID });
 
-    res.status(200).json({ orderId: order.id, amount: amountPaise });
-    
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -90,7 +89,7 @@ app.post('/verify-payment', async (req, res) => {
 
     if (expectedSignature === razorpay_signature) {
       const contributionRef = db.collection("contributions").doc(razorpay_order_id);
-      
+
       const result = await db.runTransaction(async (transaction) => {
         const contributionSnap = await transaction.get(contributionRef);
 

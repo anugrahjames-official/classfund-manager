@@ -18,7 +18,7 @@ onAuthStateChanged(auth, (user) => {
       username = Number(user.uid);
     }
 
-    if (user.uid !== "admin" && user.email && user.email.endsWith('@example.com')) {
+    if (user.uid !== "admin" && user.email && user.email.endsWith('@csed.com')) {
       // First login - force setup
       document.getElementById("setupModalOverlay").classList.add("visible-modal");
     } else {
@@ -176,7 +176,7 @@ document.getElementById("settings-form").addEventListener("submit", async (e) =>
 });
 
 document.getElementById("classFund-card").addEventListener("click", () => {
-  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@example.com')) {
+  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@csed.com')) {
     alert("Please complete account setup first.");
     return;
   }
@@ -186,7 +186,7 @@ document.getElementById("classFund-card").addEventListener("click", () => {
 })
 
 document.getElementById("myPayments-card").addEventListener("click", () => {
-  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@example.com')) {
+  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@csed.com')) {
     alert("Please complete account setup first.");
     return;
   }
@@ -198,7 +198,7 @@ document.getElementById("back-btn").addEventListener("click", navigateToHome)
 document.getElementById("my-payments-back-btn").addEventListener("click", navigateToHome)
 
 async function handlePaymentMenuOpen(preSelectedProgramId = null) {
-  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@example.com')) {
+  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@csed.com')) {
     alert("Please complete account setup first.");
     return;
   }
@@ -344,7 +344,7 @@ document.getElementById("payment-form").addEventListener("submit", async (e) => 
   e.preventDefault();
   e.stopPropagation();
 
-  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@example.com')) {
+  if (auth.currentUser && auth.currentUser.email && auth.currentUser.email.endsWith('@csed.com')) {
     alert("Please complete account setup first.");
     return;
   }
@@ -366,7 +366,7 @@ document.getElementById("payment-form").addEventListener("submit", async (e) => 
   try {
 
     // Step A: Request our backend to create an order
-    const BACKEND_URL = "https://YOUR_BACKEND_URL"; // User should update this after deployment
+    const BACKEND_URL = "https://classfund-test1.onrender.com"; // User should update this after deployment
     const response = await fetch(BACKEND_URL + '/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${idToken}` },
@@ -380,14 +380,14 @@ document.getElementById("payment-form").addEventListener("submit", async (e) => 
     }
     // Step B: Set up the payment window options
     const options = {
-      "key": "REDACTED_RAZORPAY_KEY",
+      "key": orderData.key,
       "amount": orderData.amount,
       "currency": "INR",
       "name": "Class Fund Manager",
       "order_id": orderData.orderId,
       "handler": function (response) {
         alert("Payment received. Verifying payment...");
-        const BACKEND_URL = "https://YOUR_BACKEND_URL"; // User should update this after deployment
+        const BACKEND_URL = "https://classfund-test1.onrender.com"; // User should update this after deployment
         const verifyResponse = fetch(BACKEND_URL + '/verify-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
