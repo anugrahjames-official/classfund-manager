@@ -59,6 +59,7 @@ app.post("/create-order", verifyToken, async (req, res) => {
 
     await db.collection("contributions").doc(order.id).set({
       rollNo,
+      userId: req.user.uid,
       programId,
       status: "pending",
       orderId: order.id,

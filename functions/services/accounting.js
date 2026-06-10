@@ -65,9 +65,22 @@ export async function recordContribution(db, transaction, params) {
   // 3. Read program ledger (if program-specific)
   let programLedgerRef = null;
   let programLedgerSnap = null;
+  let isNewContributor = false;
   if (programId && programId !== "global") {
     programLedgerRef = db.collection("ledgers").doc(`program_${programId}`);
     programLedgerSnap = await transaction.get(programLedgerRef);
+
+    if (programLedgerSnap.exists) {
+      const pastContribsQuery = db.collection("contributions")
+        .where("userId", "==", userId)
+        .where("programId", "==", programId)
+        .where("status", "==", "completed")
+        .limit(1);
+      const pastContribsSnap = await transaction.get(pastContribsQuery);
+      if (pastContribsSnap.empty) {
+        isNewContributor = true;
+      }
+    }
   }
 
   // --- WRITE PHASE ---
@@ -78,6 +91,7 @@ export async function recordContribution(db, transaction, params) {
     // Razorpay flow: update existing pending contribution
     contributionRef = existingContribRef;
     transaction.update(contributionRef, {
+      userId,
       status: "completed",
       paymentId,
       paymentMethod,
@@ -137,10 +151,14 @@ export async function recordContribution(db, transaction, params) {
       });
     } else {
       const pData = programLedgerSnap.data();
-      transaction.update(programLedgerRef, {
+      const programUpdate = {
         totalContributions: (pData.totalContributions || 0) + amount,
         balance: (pData.balance || 0) + amount
-      });
+      };
+      if (isNewContributor) {
+        programUpdate.contributorsCount = (pData.contributorsCount || 0) + 1;
+      }
+      transaction.update(programLedgerRef, programUpdate);
     }
   }
 
